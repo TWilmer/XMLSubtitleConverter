@@ -3,25 +3,37 @@ use XML::Simple;
 use Data::Dumper;
 sub toFrames {
    my $time = shift;
-   $time=~s/\./:/g;
- # print "Time is $time\n";
-   @items=split(/:/,$time);
-#print Dumper @items;
+  print "Time is $time\n";
+
+   @items=split(/\./,$time);
+print Dumper @items;
 #  print "fettich\n";
 #offset should be give by commandline
-$hours=$items[0]+0-10;
-$hours=$hours+2;
-$minutes=$items[1]+0;
-$seconds=$items[2]+0;
-$mseconds=$items[3]+0;
+$second=$items[0];
+$mseconds=$items[1];
 #fps should come from XML
-$fps=25;
-$msperframe=1000/$fps;
-$mstime=((($hours*60)+$minutes)*60+$seconds)*1000+$mseconds;
-#print "ms $mstime\n";
-$frame=$mstime/$msperframe;
+$mstime=$second*1000+$mseconds;
+
+
+print "s $second ms $mseconds = $mstime\n";
+
 # print "frame $frame\n";
-return $frame;
+$ms=$mstime%1000;
+$mstime=$mstime-$ms;
+$mstime=$mstime/1000;
+
+$seconds=$mstime%60;
+$mstime=$mstime-$seconds;
+$mstime=$mstime/60;
+
+$minutes=$mstime%60;
+$mstime=$mstime-$minutes;
+$mstime=$mstime/60;
+
+$hours=$mstime;
+$ret= "$hours:$minutes:$seconds,$ms";
+print "Return $ret\n";
+return $ret;
 }
 
 sub is_array {
@@ -100,7 +112,7 @@ $begin=~s/^1/0/;
 
 
  #print OUT "{$startFrame}{$endFrame}$attr$content\n";
-print OUT "\n$count\n$begin --> $end\n$content\n";
+print OUT "\n$count\n$startFrame --> $endFrame\n$content\n";
 $count=$count+1;
 
 
